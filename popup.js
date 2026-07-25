@@ -9,9 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const deepworkStart = document.getElementById('deepwork-start');
   const deepworkEnd = document.getElementById('deepwork-end');
 
+  // Normalise une saisie de site : retire protocole, chemin, "www.", casse et espaces.
+  function normalizeSite(raw) {
+    let s = (raw || '').trim().toLowerCase();
+    if (!s) return '';
+    s = s.replace(/^https?:\/\//, '');
+    s = s.split('/')[0];
+    s = s.replace(/^www\./, '');
+    return s;
+  }
+
   // 1. Au démarrage, on charge toutes les données sauvegardées
   chrome.storage.local.get(['blockedSites', 'timerDuration', 'showOverlay', 'deepworkEnabled', 'deepworkStart', 'deepworkEnd'], (data) => {
-    const sites = data.blockedSites || ['instagram.com'];
+    if (chrome.runtime.lastError) return;
+    const sites = data.blockedSites || DEFAULT_BLOCKED_SITES;
     timerInput.value = data.timerDuration || 120;
     toggleOverlay.checked = data.showOverlay !== false; 
     
@@ -35,15 +46,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function triggerSaveDuration() {
-    const duration = parseInt(timerInput.value, 10);
-    if (duration > 0) {
-      chrome.storage.local.set({ timerDuration: duration }, () => {
-        saveDurationIcon.classList.add('saved');
-        setTimeout(() => {
-          saveDurationIcon.classList.remove('saved');
-        }, 1500);
-      });
-    }
+    let duration = parseInt(timerInput.value, 10);
+    if (!Number.isFinite(duration)) return;
+    // Clamp sur les bornes du champ (10 à 600 s).
+    duration = Math.min(Math.max(duration, 10), 600);
+    timerInput.value = duration;
+    chrome.storage.local.set({ timerDuration: duration }, () => {
+      saveDurationIcon.classList.add('saved');
+      setTimeout(() => {
+        saveDurationIcon.classList.remove('saved');
+      }, 1500);
+    });
   }
 
   saveDurationIcon.addEventListener('click', triggerSaveDuration);
@@ -59,16 +72,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   addSiteBtn.addEventListener('click', () => {
-    const newSite = newSiteInput.value.trim().toLowerCase();
+    const newSite = normalizeSite(newSiteInput.value);
     if (newSite) {
       chrome.storage.local.get(['blockedSites'], (data) => {
-        const sites = data.blockedSites || ['instagram.com'];
+        if (chrome.runtime.lastError) return;
+        const sites = data.blockedSites || DEFAULT_BLOCKED_SITES;
         if (!sites.includes(newSite)) {
           sites.push(newSite);
           chrome.storage.local.set({ blockedSites: sites }, () => {
             renderSites(sites);
             newSiteInput.value = '';
           });
+        } else {
+          newSiteInput.value = '';
         }
       });
     }

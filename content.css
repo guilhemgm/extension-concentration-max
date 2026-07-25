@@ -1,0 +1,37 @@
+/* content.css — style de l'overlay de compte à rebours injecté sur les pages bloquées.
+   Injecté via content_scripts dans le manifest. La position (left/top) est gérée
+   dynamiquement par content.js ; ici on définit l'apparence et les états. */
+
+#focus-timer-overlay {
+    position: fixed;
+    z-index: 999999999;
+    background-color: #ffffff;
+    color: #ff6b00;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 24px;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    cursor: grab;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.03em;
+}
+
+/* Pendant le déplacement */
+#focus-timer-overlay.is-dragging {
+    cursor: grabbing;
+}
+
+/* Dernières secondes : rouge + pulsation */
+#focus-timer-overlay.is-urgent {
+    color: #ef4444;
+    animation: focus-timer-pulse 1s infinite;
+}
+
+@keyframes focus-timer-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}

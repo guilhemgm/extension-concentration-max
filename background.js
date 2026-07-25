@@ -1,31 +1,50 @@
-// Ouvre la page de bienvenue lors de l'installation
+// Constantes partagées (DEFAULT_BLOCKED_SITES, matchBlockedSite).
+importScripts('constants.js');
+
+// À l'installation : page de bienvenue + valeurs par défaut posées une seule fois.
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.tabs.create({ url: "welcome.html" });
   }
+  // Garantit la présence de la liste par défaut (install comme mise à jour).
+  chrome.storage.local.get(['blockedSites'], (result) => {
+    if (chrome.runtime.lastError) return;
+    if (!result.blockedSites) {
+      chrome.storage.local.set({ blockedSites: DEFAULT_BLOCKED_SITES });
+    }
+  });
 });
 
 // Surveille la navigation pour bloquer les sites
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.url && !changeInfo.url.includes("timer.html")) {
-    const urlObj = new URL(changeInfo.url);
-    const domain = urlObj.hostname;
+  if (!changeInfo.url || changeInfo.url.includes("timer.html")) return;
 
-    chrome.storage.local.get(['blockedSites', domain], (result) => {
-      const sites = result.blockedSites || ["instagram.com"];
-      const isBlocked = sites.some(site => domain.includes(site));
+  let domain;
+  try {
+    domain = new URL(changeInfo.url).hostname;
+  } catch (e) {
+    return; // URL non parsable : on ignore.
+  }
 
-      if (isBlocked) {
-        const expirationTime = result[domain];
-        const currentTime = Date.now();
-        
-        if (!(expirationTime && currentTime < expirationTime)) {
-          const blockPageUrl = chrome.runtime.getURL("timer.html");
-          chrome.tabs.update(tabId, { 
-            url: blockPageUrl + "?target=" + encodeURIComponent(changeInfo.url) 
-          });
-        }
+  chrome.storage.local.get(['blockedSites'], (result) => {
+    if (chrome.runtime.lastError) return;
+
+    const matchedSite = matchBlockedSite(domain, result.blockedSites);
+    if (!matchedSite) return;
+
+    // Le déblocage est stocké sous la clé du site correspondant (pas le hostname brut).
+    chrome.storage.local.get([matchedSite], (unlock) => {
+      if (chrome.runtime.lastError) return;
+
+      const expirationTime = unlock[matchedSite];
+      const currentTime = Date.now();
+
+      if (!(expirationTime && currentTime < expirationTime)) {
+        const blockPageUrl = chrome.runtime.getURL("timer.html");
+        chrome.tabs.update(tabId, {
+          url: blockPageUrl + "?target=" + encodeURIComponent(changeInfo.url)
+        });
       }
     });
-  }
-}); 
+  });
+});

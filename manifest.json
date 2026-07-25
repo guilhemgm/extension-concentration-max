@@ -1,15 +1,14 @@
 {
   "manifest_version": 3,
   "name": "MEGA CONCENTRATION",
-  "version": "6.7",
+  "version": "6.8",
   "description": "Bloque les sites distrayants et concentre-toi sur ce qui compte vraiment.",
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "permissions": [
-    "tabs", 
     "storage"
   ],
   "host_permissions": [
@@ -25,7 +24,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["constants.js", "content.js"],
+      "css": ["content.css"]
     }
   ],
   "web_accessible_resources": [
