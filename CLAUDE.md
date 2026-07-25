@@ -11,8 +11,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 There is no build, lint, or test tooling. To work on it:
 
 - **Load/reload:** `chrome://extensions` → enable Developer mode → "Load unpacked" → select this folder. After editing any file, click the reload icon on the extension card. Reloading the service worker (`background.js`) requires this; content-script changes require reloading the target tab too.
-- **`.crx` / `.pem`:** `concentration-max.crx` is a packaged build and `concentration-max.pem` is its **private signing key** — never regenerate, overwrite, or commit changes to the key, and don't edit the `.crx` by hand. Repackage only via Chrome's "Pack extension" using the existing `.pem` when a distributable is explicitly needed.
+- **`.crx` / `.pem`:** `concentration-max.crx` is a packaged build and `concentration-max.pem` is its **private signing key**. Both are **git-ignored** (see `.gitignore`) and must stay that way — the `.pem` must never be committed or pushed (it lets anyone sign updates impersonating this extension). Keep the `.pem` on disk; don't regenerate or overwrite it. Repackage via Chrome's "Pack extension" using the existing `.pem` when a distributable is explicitly needed.
 - **Bump `version` in `manifest.json`** when producing a new package.
+
+## Git / GitHub
+
+- Remote: `origin` → `https://github.com/guilhemgm/extension-concentration-max.git`, branch `main`.
+- Never `git add` the `.pem` or `.crx` (they're git-ignored). If either ever gets committed, treat the key as compromised, purge it from history, and force-push.
 
 ## Architecture
 
