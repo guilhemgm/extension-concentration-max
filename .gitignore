@@ -1,0 +1,5 @@
+# Clé privée de signature — NE JAMAIS committer
+*.pem
+
+# Artefacts de build (extension packagée)
+*.crx

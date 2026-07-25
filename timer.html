@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MEGA CONCENTRATION</title>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --color-main: #1d8ae2;
+            --color-accent: #ff6b00;
+            --bg-badge: #f1f5f9;
+            --radius: 24px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-page); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 20px;
+        }
+
+        .card { 
+            background-color: var(--bg-card); 
+            max-width: 440px; 
+            width: 100%; 
+            border-radius: var(--radius); 
+            padding: 40px; 
+            box-shadow: var(--shadow); 
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+        }
+
+        /* Badges */
+        .badges-container {
+            display: flex; 
+            justify-content: center; 
+            gap: 8px; 
+            margin-bottom: 24px;
+        }
+        
+        .badge { 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            padding: 6px 16px; 
+            border-radius: 100px; 
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+        .badge-target { background-color: var(--bg-badge); color: var(--text-muted); }
+        .badge-danger { background-color: #ef4444; color: white; }
+
+        /* Typographie */
+        h1 { 
+            font-size: 1.75rem; 
+            font-weight: 800; 
+            line-height: 1.2; 
+            margin-bottom: 8px; 
+            letter-spacing: -0.03em; 
+        }
+        
+        .subtitle { 
+            color: var(--text-muted); 
+            font-size: 1rem; 
+            line-height: 1.5; 
+            margin: 0 auto; 
+            max-width: 320px; 
+        }
+
+        .timer { 
+            font-size: 6rem; 
+            font-weight: 800; 
+            color: var(--color-accent); 
+            margin: 24px 0 40px; 
+            line-height: 1; 
+            text-shadow: 0 4px 24px rgba(255, 107, 0, 0.15);
+            /* NOUVEAU : Verrouillage au centre avec Flexbox */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* NOUVEAU : Séparation des minutes/secondes et du colon */
+        .timer span.digits {
+            width: 1.4em; /* Utilise 'em' pour s'adapter aux différentes tailles de timer */
+            display: inline-block;
+        }
+        .timer span.digits:first-child { text-align: right; }
+        .timer span.digits:last-child { text-align: left; }
+        
+        .timer span.colon {
+            width: 0.3em;
+            text-align: center;
+            position: relative;
+            top: -2px; /* Ajustement optique pour centrer parfaitement les deux-points */
+        }
+
+        /* Éléments de formulaire (Étapes 2 et 3) */
+        .bypass-container { display: flex; flex-direction: column; gap: 16px; margin-top: 16px; animation: fadeIn 0.3s ease-out; }
+        
+        .phrase-to-copy { background-color: #fafafa; border: 1px dashed #cbd5e1; padding: 16px; border-radius: 12px; font-style: italic; font-size: 0.95rem; color: var(--text-main); line-height: 1.5; text-align: left; user-select: none; }
+        
+        textarea, input[type="number"] { width: 100%; padding: 16px; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; outline: none; background-color: var(--bg-card); transition: all 0.2s; resize: none; }
+        textarea:focus, input[type="number"]:focus { border-color: var(--color-main); box-shadow: 0 0 0 4px rgba(29, 138, 226, 0.1); }
+        
+        .error-msg { color: #ef4444; font-size: 0.85rem; font-weight: 600; text-align: left; margin-top: -8px; display: none; animation: shake 0.3s ease-in-out; }
+        
+        .presets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; width: 100%; margin-bottom: 12px; margin-top: 32px; }
+        .preset-pill { background: none; border: 1px solid #cbd5e1; padding: 14px 10px; border-radius: 12px; cursor: pointer; font-size: 0.95rem; font-weight: 600; color: var(--text-muted); transition: all 0.2s; }
+        .preset-pill:hover { border-color: var(--color-main); color: var(--color-main); background-color: rgba(29, 138, 226, 0.05); }
+        
+        .btn-submit { width: 100%; background-color: var(--color-main); color: #ffffff; border: none; padding: 16px; border-radius: 12px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background-color 0.2s; }
+        .btn-submit:hover { background-color: #1572b8; }
+
+        /* Bouton secondaire (Skip) */
+        .link-secondary { 
+            background: none; border: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; cursor: pointer; padding-bottom: 2px; transition: all 0.3s ease; position: relative; display: inline-block;
+        }
+        .link-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
+        .link-secondary:not(:disabled):hover { color: var(--text-main); }
+        .link-secondary:not(:disabled)::after {
+            content: ''; position: absolute; width: 100%; height: 1px; bottom: 0; left: 0; background-color: var(--text-main); transform: scaleX(0); transition: transform 0.3s ease; transform-origin: right;
+        }
+        .link-secondary:not(:disabled):hover::after { transform: scaleX(1); transform-origin: left; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-4px); } }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- BADGES -->
+        <div class="badges-container">
+            <div class="badge badge-target" id="target-url">...</div>
+            <div class="badge badge-danger" id="deepwork-badge" style="display: none;">MODE DEEPWORK</div>
+        </div>
+
+        <!-- ETAPE 1 : FOCUS -->
+        <div id="step-focus">
+            <h1 id="focus-title">Minute papillon !</h1>
+            <p class="subtitle" id="focus-subtitle">Tu as probablement plus important à faire. Prends un instant pour respirer.</p>
+           
+            <div id="deepwork-gif-container" style="display: none; margin: 32px 0 0 0;">
+                <img src="./stop.gif" alt="Au travail !" style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
+            </div>
+
+            <div class="timer" id="timer-focus">00:00</div>
+            
+            <button class="link-secondary" id="btn-show-bypass">Je ne peux pas attendre</button>
+        </div>
+
+        <!-- ETAPE 2 : FRICTION -->
+        <div id="step-friction" style="display: none;">
+            <h1>Tu es sûr ?</h1>
+            <p class="subtitle">Recopie <strong>exactement</strong> la phrase ci-dessous pour accéder au site.</p>
+            
+            <div class="timer" id="timer-friction" style="font-size: 4.5rem; margin: 20px 0 36px 0;">00:00</div>
+            
+            <div class="bypass-container">
+                <div class="phrase-to-copy" id="target-text">Chargement...</div>
+                <textarea id="user-input" rows="3" placeholder="Tape le texte ici..."></textarea>
+                <div id="bypass-error" class="error-msg">Le texte ne correspond pas exactement.</div>
+                <button class="btn-submit" id="btn-validate-bypass">Valider ma phrase</button>
+            </div>
+        </div>
+
+        <!-- ETAPE 3 : LIMITE -->
+        <div id="step-limit" style="display: none;">
+            <h1 style="font-size: 1.5rem">Combien de temps souhaites-tu passer sur ce site ?</h1>
+            
+            <div class="presets-grid">
+                <button class="preset-pill" data-time="1">1 min</button>
+                <button class="preset-pill" data-time="5">5 min</button>
+                <button class="preset-pill" data-time="10">10 min</button>
+            </div>
+            
+            <div style="width: 100%; margin-bottom: 24px;">
+                <input type="number" id="intended-time" value="5" min="1" max="120" style="text-align: center; font-weight: 700; font-size: 1.2rem; color: var(--color-main);">
+            </div>
+            
+            <p id="tax-notice" style="color: #ef4444; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px; display: none;">Tu n'as pas attendu, ton temps est limité à 5 minutes maximum.</p>
+            
+            <button class="btn-submit" id="btn-final-access">Valider et accéder</button>
+        </div>
+    </div>
+
+    <script src="timer.js"></script>
+</body>
+</html>

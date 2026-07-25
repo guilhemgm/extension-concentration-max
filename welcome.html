@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue sur Focus Timer</title>
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --color-main: #1d8ae2;
+            --color-accent: #ff6b00;
+            --radius: 20px;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-page); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 40px 20px; }
+        
+        .card { background-color: var(--bg-card); max-width: 600px; width: 100%; border-radius: var(--radius); padding: 50px; box-shadow: var(--shadow); border: 1px solid #e2e8f0; animation: slideUp 0.6s ease-out; }
+        
+        .icon-container { width: 64px; height: 64px; background-color: rgba(29, 138, 226, 0.1); border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 32px; margin-bottom: 24px; color: var(--color-main); }
+        
+        h1 { font-size: 2rem; font-weight: 800; margin-top: 0; margin-bottom: 12px; letter-spacing: -0.02em; }
+        .subtitle { color: var(--text-muted); font-size: 1.1rem; line-height: 1.5; margin-bottom: 40px; }
+        
+        .step { display: flex; margin-bottom: 24px; align-items: flex-start; }
+        .step-number { background-color: var(--color-main); color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 0.9rem; margin-right: 16px; flex-shrink: 0; margin-top: 2px;}
+        .step-content h3 { margin: 0 0 6px 0; font-size: 1.1rem; color: var(--text-main); }
+        .step-content p { margin: 0; color: var(--text-muted); font-size: 0.95rem; line-height: 1.5; }
+
+        .pin-instruction { background-color: #f1f5f9; padding: 20px; border-radius: 12px; margin-top: 40px; display: flex; align-items: center; gap: 16px; border: 1px dashed #cbd5e1; }
+        .pin-instruction p { margin: 0; font-size: 0.95rem; font-weight: 500; }
+        .puzzle-icon { font-size: 1.5rem; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="icon-container">🧘</div>
+        <h1>Reprends le contrôle.</h1>
+        <p class="subtitle">Bienvenue sur Focus. Cette extension n'est pas un simple bloqueur, c'est un outil pour t'aider à naviguer consciemment.</p>
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <h3>Le Pause Timer</h3>
+                <p>Quand tu tentes d'ouvrir un site bloqué (comme Instagram ou YouTube), l'extension te met sur pause. Profites-en pour respirer et te demander si c'est vraiment le moment.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <h3>La Friction</h3>
+                <p>Si tu ne peux vraiment pas attendre, tu devras fournir un effort (taper une phrase d'engagement) pour court-circuiter le délai. Cela désactive le pilote automatique de ton cerveau.</p>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <h3>L'Intention</h3>
+                <p>Une fois le temps écoulé, c'est toi qui choisis ton temps d'écran autorisé. Quand le délai est dépassé, la page se reverrouille automatiquement.</p>
+            </div>
+        </div>
+
+        <div class="pin-instruction">
+            <div class="puzzle-icon">🧩</div>
+            <p><strong>Dernière étape :</strong> Clique sur l'icône de puzzle en haut à droite de ton navigateur, et épingle Focus (📌) pour configurer facilement tes sites à bloquer.</p>
+        </div>
+    </div>
+
+</body>
+</html>
